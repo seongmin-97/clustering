@@ -13,24 +13,22 @@ int clustering(Image* image)
 	Float64 mse;
 	Float64 move = 0.0;
 
-
 	while (True)
 	{
 		if (move < THRESHOLD)
 		{
-			nowCluster <<= 1;
+			printf("cluster ¼ö : %d   mse : %f  move : %f \n", nowCluster, mse, move);
 
+			nowCluster <<= 1;
 			if (nowCluster > CLUSTER)
 				break;
 
 			devide_cluster(&cluster, nowCluster);
 		}
 
-		relocation_cluster(&cluster, image, nowCluster);
-		move = relocation_center(&cluster, image, nowCluster);
+		relocate_cluster(&cluster, image, nowCluster);
+		move = relocate_center(&cluster, image, nowCluster);
 		mse = get_mse(&cluster, image, nowCluster);
-
-		printf("cluster ¼ö : %d   mse : %f  move : %f \n", nowCluster, mse, move);
 	}
 
 	destroy_cluster(&cluster);
@@ -93,7 +91,7 @@ int devide_cluster(Cluster* cluster, Int32 nowCluster) // nowCluster°¡ clusterCo
 	return 0;
 }
 
-int relocation_cluster(Cluster* cluster, Image* image, Int32 nowCluster)
+int relocate_cluster(Cluster* cluster, Image* image, Int32 nowCluster)
 {
 	Int32 clusterCenter;
 	Float64 distance;
@@ -124,7 +122,7 @@ int relocation_cluster(Cluster* cluster, Image* image, Int32 nowCluster)
 	return 0;
 }
 
-Float64 relocation_center(Cluster* cluster, Image* image, Int32 nowCluster)
+Float64 relocate_center(Cluster* cluster, Image* image, Int32 nowCluster)
 {
 	Float64 move = 0.0;
 	Float64 newCenter[CLUSTER][VECTOR_SIZE] = {0};
@@ -188,7 +186,9 @@ Float64 get_mse(Cluster* cluster, Image* image, Int32 nowCluster)
 		mse += get_distance(cluster->center[cluster->clusterIdx[vecIdx]], blockVector);
 	}
 
-	return mse /= image->blockCount;
+	mse /= (image->blockCount * VECTOR_SIZE);
+
+	return mse;
 }
 
 Float64 get_distance(Float64* center, Float64* vector)

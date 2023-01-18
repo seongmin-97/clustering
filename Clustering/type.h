@@ -7,7 +7,7 @@
 #define IMG_SIZE WIDTH*HEIGHT
 #define IMG_CNT  19
 
-#define BLOCK_SIZE  2
+#define BLOCK_SIZE  16
 #define VECTOR_SIZE BLOCK_SIZE*BLOCK_SIZE
 
 #define CLUSTER   128
